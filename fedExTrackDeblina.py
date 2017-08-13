@@ -31,8 +31,17 @@ def convertTimeTo24hr(t):
     return getTime
 
 
+# Function to concatenate day or month value with 0 in the beginning if they are single digit values
+def updateDate(d, m, y):
+    if int(d) < 10:
+        d = '0' + d
+    if int(m) < 10:
+        m = '0' + m
+    return d+'/'+m+'/'+y
+
+
 # Function to obtain the name of the day which is represented by the given date
-def getDay(date, month, year):
+def getDayName(date, month, year):
     dd = int(date)
     mm = int(month)
     yy = int(year)
@@ -45,7 +54,6 @@ def getDay(date, month, year):
     return name_of_day[:3]
 
 
-#tracking_number = '744668909687'
 
 tracking_number = input("Tracking number:")
 try:
@@ -90,19 +98,12 @@ try:
         shipDate = packageDetail["displayTenderedDt"].split('/')
 
         # Obtaining the name od day from the fetched ship date
-        shipDay = getDay(shipDate[1], shipDate[0], shipDate[2])
+        shipDay = getDayName(shipDate[1], shipDate[0], shipDate[2])
 
         # If the value of date, month or year is less than 10 then it
-        # should be of the form 01/02/03/04/... accordingly
-        if int(shipDate[0]) < 10:
-            shipDate[0] = '0' + shipDate[0]
-        if int(shipDate[1]) < 10:
-            shipDate[1] = '0' + shipDate[1]
-        if int(shipDate[2]) < 10:
-            shipDate[2] = '0' + shipDate[2]
-
+        # should be of the form 01/02/03/04/... accordingly and
         # concatenating day,month,year to get desired shipping date
-        desiredShipDate = shipDate[1] + '/' + shipDate[0] + '/' + shipDate[2]
+        desiredShipDate = updateDate(shipDate[1], shipDate[0], shipDate[2])
 
         # fetching the delivery status and date from mainData
         deliveryData = mainData.split(':')
@@ -110,17 +111,11 @@ try:
         deliveryDate = deliveryData[1][1:10].split('/')
 
         # obtaining name of day of delivery from the delivery date
-        deliveryDay = getDay(deliveryDate[1], deliveryDate[0], deliveryDate[2])
+        deliveryDay = getDayName(deliveryDate[1], deliveryDate[0], deliveryDate[2])
 
         # If the value of date, month or year is less than 10 then it
         # should be of the form 01/02/03/04/... accordingly
-        if int(deliveryDate[0]) < 10:
-            deliveryDate[0] = '0' + deliveryDate[0]
-        if int(deliveryDate[1]) < 10:
-            deliveryDate[1] = '0' + deliveryDate[1]
-        if int(deliveryDate[2]) < 10:
-            deliveryDate[2] = '0' + deliveryDate[2]
-        deliveryDate = deliveryDate[1] + '/' + deliveryDate[0] + '/' + deliveryDate[2]
+        deliveryDate = updateDate(deliveryDate[1], deliveryDate[0], deliveryDate[2])
 
         time = deliveryData[1][-1] + ':' + deliveryData[2][0:2]+""+deliveryData[2][3:5]
         #print(mainDataSplit[2][3:5])
